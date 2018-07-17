@@ -13,6 +13,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Button from '@material-ui/core/Button';
+import axios from 'axios'
 
 const styles = theme => ({
   root: {
@@ -49,6 +50,7 @@ const ranges = [
 
 class Login extends React.Component {
   state = {
+    name:'',
     password: '',
     showPassword: false,
   };
@@ -65,19 +67,40 @@ class Login extends React.Component {
     this.setState(state => ({ showPassword: !state.showPassword }));
   };
 
+  authenticate = (name, password) => event => {
+    event.preventDefault()
+    axios.post('/api/login', {
+    name: name,
+    password: password
+  })
+  .then(function (response) {
+    console.log(response)
+    if (response.data.success){
+      let token = response.data.token
+      window.localStorage.setItem('token', token);
+      window.location.href='/'
+    } else {
+      window.location.href='/login'
+    };
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+  }
+
   render() {
     const { classes } = this.props;
 
     return (
       <div className={classes.root}>
         <h1> Login</h1>
-        <form action="/login" method="POST">
+        <form onSubmit={this.authenticate(this.state.name,this.state.password)}>
         <FormControl  fullWidth className={classes.margin}>
           <InputLabel htmlFor="adornment-email">Username</InputLabel>
           <Input
             id="adornment-email"
             value={this.state.amount}
-            onChange={this.handleChange('amount')}
+            onChange={this.handleChange('name')}
             name="username"
           />
           <Input

@@ -39,11 +39,11 @@ function Navbar(props) {
           <Typography variant="title" color="inherit" className={classes.flex}>
             <Link to="/" style={{ textDecoration: 'none',color:"white" }}>Jira Text Editor</Link>
           </Typography>
-          {!props.currentUser ?(
+          {!props.token ?(
             <div>
-              <Button color="inherit"><Link to="/register" style={{ textDecoration: 'none',color:"white" }}>Sign Up</Link></Button>
-              <Button color="inherit"><Link to="/login" style={{ textDecoration: 'none',color:"white" }}>Login</Link></Button></div>): null}
-            {props.currentUser ?(<Button color="inherit"><a href="/logout" style={{ textDecoration: 'none',color:"white" }}>Log Out</a></Button>):null
+              <Button color="inherit"><Link to="/register" style={{ textDecoration: 'none',color:"white" }}>Beta - Sign Up</Link></Button>
+              <Button color="inherit"><Link to="/login" style={{ textDecoration: 'none',color:"white" }}>Beta - Login</Link></Button></div>): null}
+            {props.token ?(<Button color="inherit" onClick={props.logout}> Log Out</Button>):null
           }
         </Toolbar>
       </AppBar>

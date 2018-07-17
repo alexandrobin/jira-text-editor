@@ -1,5 +1,22 @@
 import React, { Component } from 'react';
 
+const WelcomeText = `h1. Welcome to Jira Text Editor
+
+Hi! I'm your first file in *JTE*. If you want to play, you can edit me.
+
+h2. H2 Title
+h3. H3 Title
+h4. H4 Title
+h5. H5 Title
+h6. H6 Title
+
+* _Bullet points_
+* :) Emojis
+
+*Known issues :*
+* Bold text with bullet points
+* Too much padding between elements`
+
 class JiraFormatted extends React.Component {
   constructor() {
     super()
@@ -200,7 +217,7 @@ export default class JiraFormat extends React.Component {
   constructor() {
     super()
     this.state = {
-      value: "Test"
+      value: WelcomeText
     }
   }
   onChange(event) {

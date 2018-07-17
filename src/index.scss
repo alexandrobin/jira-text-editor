@@ -6,6 +6,7 @@ body {
   bottom: 0;
   margin: 0;
   padding: 0;
+  font-family: 'Roboto';
 }
 
 
@@ -25,27 +26,17 @@ body {
 
 textarea {
   position: absolute;
-
   left: 0;
   top: 0;
   bottom:0;
-  width: calc(50%);
+  width: calc(50% - 60px);
   height: 100%;
   margin: 0;
   padding: 15px;
   resize: none;
   font-size: 100%;
 }
-.render {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  top:0;
-  width: 50%;
-  background: #FAFAFA;
-  margin: 0;
-  padding: 15px;
-}
+
 
 
 .editor-container {
@@ -60,6 +51,17 @@ textarea {
   height: auto;
 }
 
+.render {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  top:0;
+  width: 50%;
+  background: #FAFAFA;
+  margin: 0;
+  padding: 15px;
+
+
 .block {
   display: block;
   margin-left: 15px;
@@ -68,10 +70,10 @@ textarea {
 }
 
 
-* {
-  font-family: sans-serif;
-}
-/*h1,h2,h3,h4,h5,h6 {
+// * {
+//   font-family: 'Roboto';
+// }
+h1,h2,h3,h4,h5,h6 {
   padding-bottom: 3px;
   margin: 0;
   margin-top: 5px;
@@ -99,7 +101,7 @@ h6 {
   font-size: 100%;
   text-transform: uppercase;
   color: #999999;
-}*/
+}
 
 table {
   border-collapse: collapse;
@@ -115,4 +117,5 @@ th, td {
 }
 th {
   background: #DDDDDD;
+}
 }

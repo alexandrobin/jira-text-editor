@@ -5,6 +5,8 @@ var BUILD_DIR = path.resolve(__dirname, 'public');
 var APP_DIR = path.resolve(__dirname, 'src');
 var ROOT_DIR = path.resolve(__dirname, '');
 
+const CSS_LOADER = ['style-loader', 'css-loader']
+const SCSS_LOADER = [...CSS_LOADER, 'sass-loader']
 
 var config = {
   entry: {
@@ -48,7 +50,11 @@ var config = {
         loader: 'babel-loader'
       },
       { test: /\.css$/,
-        loader: "style-loader!css-loader" }
+        use: CSS_LOADER},
+        {
+            test: /\.scss$/,
+            use: SCSS_LOADER,
+          },
     ]
   }
 };

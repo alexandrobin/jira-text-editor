@@ -8,30 +8,32 @@ import SignUpForm from './SignUpForm'
 import Login from './Login'
 import JiraFormat from './JiraRenderer'
 import Navbar from './Navbar'
-import './App.css';
+import axios from 'axios'
 
 
 class App extends Component {
   state = {
+    token: "",
     user : undefined
   }
 
+  componentWillMount(){
+    this.setState({token:window.localStorage.getItem('token')})
+  }
+
+  logout = () => {
+    localStorage.clear()
+    this.setState({token:""})
+  }
 
   render() {
-    //let user
-    // fetch('/', { credentials : 'same-origin' })
-    //     .then(function(res){
-    //       console.log(res.test)
-    //       user=res.currentUser
-    //     });
-    console.log(this.props.currentUser)
     return (
-      <Router>
+      <Router >
       <div className="App">
-        <Navbar user={this.state.user}/>
+        <Navbar user={this.state.user} token={this.state.token} logout={this.logout}/>
         <Route exact path="/" component={JiraFormat}/>
         <Route path="/register" component={SignUpForm}/>
-        <Route path="/login"  component={Login}/>
+        <Route path="/login"  component={() =><Login/>}/>
       </div>
     </Router>
     );
