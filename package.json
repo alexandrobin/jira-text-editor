@@ -30,6 +30,8 @@
     "build": "webpack -p"
   },
   "devDependencies": {
+    "babel": "^6.23.0",
+    "babel-cli": "^6.26.0",
     "babel-preset-stage-2": "^6.24.1",
     "node-sass": "^4.9.2",
     "webpack": "^4.15.0",
