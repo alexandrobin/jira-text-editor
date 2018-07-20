@@ -101,7 +101,7 @@ class Login extends React.Component {
             id="adornment-email"
             value={this.state.amount}
             onChange={this.handleChange('name')}
-            name="username"
+            name="mail"
           />
           <Input
             id="adornment-password"

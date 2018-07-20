@@ -6,7 +6,8 @@ var path = require('path'),
     User = require('./src/models/users'),
     Router = require('react-router'),
     morgan      = require('morgan'),
-    ejwt = require('express-jwt')
+    ejwt = require('express-jwt'),
+    sha1 = require('sha1')
 
 
 
@@ -42,20 +43,24 @@ app.use(function (req,res,next){
 // ROUTES
 // =======
 app.get('/setup', function(req, res) {
-
+  let pass = sha1('password')
   // create a sample user
   var nick = new User({
-    username: 'user',
-    password: 'password',
+    username: 'username1',
     admin: true
   });
 
+  let pwd = sha1(pass + nick._id)
+  nick.password = pwd
   // save the sample user
   nick.save(function(err) {
-    if (err) throw err;
+    if (err) {
+      res.json({success:false,err:err})
+    } else {
+      console.log('User saved successfully');
+      res.json({ success: true,user:nick });
+    };
 
-    console.log('User saved successfully');
-    res.json({ success: true });
   });
 });
 
@@ -63,26 +68,7 @@ app.get('/setup', function(req, res) {
 
 
 
-app.post("/register", function(req,res){
-  req.body.username
-  req.body.password
-  User.register(new User({username:req.body.username}), req.body.password, function(err,user){
-    if(err){
-      console.log(err)
-      return res.redirect('/register')
-    }
 
-    var token = jwt.sign(payload, app.get('superSecret'), {
-      expiresIn: '7d' // expires in 24 hours
-    });
-    res.redirect('/')
-    // passport.authenticate("local")(req, res, function(){
-    //
-    //   res.redirect('/')
-    //
-    // })
-  })
-})
 
 
 var staticPath = path.join(__dirname, './public');
@@ -94,6 +80,9 @@ app.get('/login', function(req,res){
   res.sendFile(path.resolve(__dirname, './public', 'index.html'))
 })
 app.get('/logout', (req,res)=>{
+  res.sendFile(path.resolve(__dirname, './public', 'index.html'))
+})
+app.get('/register', (req,res)=>{
   res.sendFile(path.resolve(__dirname, './public', 'index.html'))
 })
 
@@ -110,17 +99,21 @@ apiRoutes.post('/login', function(req, res) {
 
   // find the user
   User.findOne({
-    username: req.body.name
-  }, function(err, user) {
+     $or: [
+            { username : req.body.name },
+            { mail: req.body.name }
+          ]
+   }, function(err, user) {
 
     if (err) throw err;
 
     if (!user) {
       res.json({ success: false, message: 'Authentication failed. User not found.' });
     } else if (user) {
-
+      let hashedPassword  = sha1(req.body.password)
+      let pwd = sha1(hashedPassword + user._id)
       // check if password matches
-      if (user.password != req.body.password) {
+      if (user.password != pwd) {
         res.json({ success: false, message: 'Authentication failed. Wrong password.' });
       } else {
 
@@ -128,6 +121,7 @@ apiRoutes.post('/login', function(req, res) {
         // create a token with only our given payload
     // we don't want to pass in the entire user since that has the password
     const payload = {
+      id:user._id,
       admin: user.admin
     };
         var token = jwt.sign(payload, app.get('superSecret'), {
@@ -147,14 +141,44 @@ apiRoutes.post('/login', function(req, res) {
   });
 });
 
-apiRoutes.get('/user', (req,res)=> {
+apiRoutes.post("/register", function(req,res){
+  req.body.username
+  req.body.mail
+  req.body.password
+  let hashedPassword = sha1(req.body.password)
+
+  let newUser  = new User({username:req.body.name,mail:req.body.mail})
+  let pwd = sha1(hashedPassword + newUser._id)
+  newUser.password = pwd
+  newUser.save(function(err){
+    if (err) throw err
+    const payload = {
+      id:newUser._id,
+      admin:newUser.admin
+    }
+
+    var token = jwt.sign(payload,app.get('superSecret'),{expiresIn:'7d'})
+
+    // return the information including token as JSON
+    res.json({
+      success: true,
+      message: 'Enjoy your token!',
+      token: token
+    })
+  })
+
+
+
+})
+
+apiRoutes.get('/auth', (req,res)=> {
   res.json({
     user:req.user
   })
 })
 
 app.use(ejwt({secret:app.get('superSecret')}).unless({path:[
-  '/api/login','/','/dll/vendor.js','/index.js'
+  '/api/login','/','/dll/vendor.js','/index.js','/api/register'
 ]}))
 
 // route to return all users (GET http://localhost:8080/api/users)

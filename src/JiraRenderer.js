@@ -29,7 +29,7 @@ class JiraFormatted extends React.Component {
       let pn = ""
       if(i>1)
       pn = Array(i).join(pat)
-      console.log(p, pn)
+
       let re = new RegExp("^[ ]*"+p+"(.*)\n[ ]*"+p,'gm')
       e = e.replace(re,p+"$1\n-li-")
 
@@ -70,7 +70,7 @@ class JiraFormatted extends React.Component {
         let pn = ""
         if(i>1)
         pn = Array(i).join(pat)
-        console.log(p, pn)
+
         let re = new RegExp("^[ ]*"+p+"(.*)\n[ ]*"+p,'gm')
         e = e.replace(re,p+"$1\n-li-")
 

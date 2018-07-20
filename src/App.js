@@ -24,6 +24,7 @@ class App extends Component {
   logout = () => {
     localStorage.clear()
     this.setState({token:""})
+    window.location.href="/"
   }
 
   render() {
