@@ -1,9 +1,18 @@
 var mongoose= require('mongoose')
+
+var NoteSchema = new mongoose.Schema({
+  title:String,
+  value:String,
+  status:Number, //0 - Draft // 1 - Active // 2 - Archive
+  ts:{type:Date, required:true, default:Date.now}
+})
+
 var UserSchema = new mongoose.Schema({
-  username:String,
-  mail:String,
-  password:String,
-  admin:Boolean
+  username:{type: String, required: true, unique: true},
+  mail:{type: String, required: true, unique: true},
+  password:{type: String, required: true},
+  admin:Boolean,
+  notes:[NoteSchema]
 })
 
 

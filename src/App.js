@@ -11,20 +11,38 @@ import Navbar from './Navbar'
 import axios from 'axios'
 
 
+
+
 class App extends Component {
   state = {
     token: "",
-    user : undefined
+    user : false,
   }
 
   componentWillMount(){
+    let self = this
     this.setState({token:window.localStorage.getItem('token')})
+    axios.get('/api/auth')
+      .then(function(response){
+        if (!response.data.success){
+          console.log(response.data.message)
+        } else {
+          self.setState({user:response.data.user})
+        }
+
+      })
+  }
+
+  saveNote = (note) => {
+    
   }
 
   logout = () => {
+    this.setState({user:false})
     localStorage.clear()
-    this.setState({token:""})
+
     window.location.href="/"
+
   }
 
   render() {

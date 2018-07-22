@@ -4,6 +4,7 @@ var path = require('path'),
     bodyParser = require('body-parser'),
     jwt    = require('jsonwebtoken'),
     User = require('./src/models/users'),
+    //Note = require('./src/models/users'),
     Router = require('react-router'),
     morgan      = require('morgan'),
     ejwt = require('express-jwt'),
@@ -65,7 +66,27 @@ app.get('/setup', function(req, res) {
 });
 
 
-
+// app.use(ejwt({
+//   secret:app.get('superSecret')
+//   // getToken: function fromHeaders (req) {
+//   //     var token = req.headers['Authorization']
+//   //     if (token) {
+//   //       return token;
+//   //     }
+//   //     return null;
+//   //   }
+//   }
+// )
+//   .unless({path:[
+//     '/',
+//     '/login',
+//     '/register',
+//     '/api/login',
+//     '/dll/vendor.js',
+//     '/index.js',
+//     '/api/register',
+//     '/api/auth'
+// ]}))
 
 
 
@@ -79,14 +100,16 @@ app.get('/', (req, res) => {
 app.get('/login', function(req,res){
   res.sendFile(path.resolve(__dirname, './public', 'index.html'))
 })
-app.get('/logout', (req,res)=>{
-  res.sendFile(path.resolve(__dirname, './public', 'index.html'))
-})
 app.get('/register', (req,res)=>{
   res.sendFile(path.resolve(__dirname, './public', 'index.html'))
 })
 
 
+
+
+app.get('/admin', (req,res) => {
+  res.sendFile(path.resolve(__dirname,'./public', 'index.html'))
+})
 
 // API ROUTES -------------------
 
@@ -142,9 +165,6 @@ apiRoutes.post('/login', function(req, res) {
 });
 
 apiRoutes.post("/register", function(req,res){
-  req.body.username
-  req.body.mail
-  req.body.password
   let hashedPassword = sha1(req.body.password)
 
   let newUser  = new User({username:req.body.name,mail:req.body.mail})
@@ -172,22 +192,54 @@ apiRoutes.post("/register", function(req,res){
 })
 
 apiRoutes.get('/auth', (req,res)=> {
-  res.json({
-    user:req.user
+  let token = req.headers['authorization'].split(' ')[1]
+  if(token){
+    console.log(token)
+  jwt.verify(token, app.get('superSecret'), function(err, decoded) {
+  if (err) {
+    res.json({
+      success:false,
+      message:err
+    })
+  }
+  User.findOne({_id:decoded.id},function(err,user){
+    res.json({
+      success:true,
+      user:user})
   })
 })
+}})
 
-app.use(ejwt({secret:app.get('superSecret')}).unless({path:[
-  '/api/login','/','/dll/vendor.js','/index.js','/api/register'
-]}))
 
-// route to return all users (GET http://localhost:8080/api/users)
-apiRoutes.get('/users', function(req, res) {
-  User.find({}, function(err, users) {
-    res.json(users);
-  });
-});
+apiRoutes.post('/saveNote', (req,res)=> {
+  req.body.note
+  req.body.title
+  let note = new Note ({title:req.body.title,value:req.body.note})
 
+  let token = req.headers['authorization'].split(' ')[1]
+  if (token){
+  jwt.verify(token, app.get('superSecret'), function(err, decoded){
+    if (err) {
+      res.json({
+        success:false,
+        message:err
+      })
+    } else {
+      User.findOne({_id:decoded.id}, function(err,user){
+        user.notes=[]
+        if (err) throw err
+        if (!err){
+          user.notes.push(note)
+
+        user.save(function(err){
+          if (err) throw err
+        })
+      }
+      })
+    }
+  })
+
+}})
 // apply the routes to our application with the prefix /api
 
 app.use('/api', apiRoutes);
