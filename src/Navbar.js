@@ -46,7 +46,7 @@ function Navbar(props) {
             {props.user?(
               <div>
                 <Button onClick={props.saveNote} color="inherit">BETA - Save</Button>
-                <Button color="inherit">{props.user.username}</Button>
+                <Button onClick={props.toggleDrawer('right', true)} color="inherit">{props.user.username}</Button>
                 <Button color="inherit" onClick={props.logout}> Log Out</Button>
               </div>):null
           }

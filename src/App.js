@@ -9,7 +9,7 @@ import Login from './Login'
 import JiraFormat from './JiraRenderer'
 import Navbar from './Navbar'
 import axios from 'axios'
-
+import Profile from './Profile'
 
 
 
@@ -17,6 +17,7 @@ class App extends Component {
   state = {
     token: "",
     user : false,
+    right:false
   }
 
   componentWillMount(){
@@ -33,8 +34,14 @@ class App extends Component {
       })
   }
 
+  toggleDrawer = (side, open) => () => {
+    this.setState({
+      [side]: open,
+    });
+  };
+
   saveNote = (note) => {
-    
+
   }
 
   logout = () => {
@@ -49,7 +56,8 @@ class App extends Component {
     return (
       <Router >
       <div className="App">
-        <Navbar user={this.state.user} token={this.state.token} logout={this.logout}/>
+        <Navbar user={this.state.user} token={this.state.token} logout={this.logout} toggleDrawer={this.toggleDrawer}/>
+        {this.state.user ? <Profile right={this.state.right} user={this.state.user} toggleDrawer={this.toggleDrawer}/> : null }
         <Route exact path="/" component={JiraFormat}/>
         <Route path="/register" component={SignUpForm}/>
         <Route path="/login"  component={() =><Login/>}/>
