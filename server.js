@@ -248,6 +248,29 @@ apiRoutes.post('/saveNote', (req,res)=> {
 )
 
 }})
+
+apiRoutes.get('/getUserNotes', (req,res)=> {
+  let token = req.headers['authorization'].split(' ')[1]
+  if (token){
+    jwt.verify(token, app.get('superSecret'), function(err, decoded){
+      if (err) {
+        res.json({
+          success:false,
+          message:err
+        })
+      }
+      User.findOne({_id:decoded.id},function(err,result){
+        let userNotes = []
+        result.notes.map(_note => {
+          userNotes.push(_note)
+        })
+        res.json({
+          notes:userNotes
+        })
+      })
+    })
+  }
+})
 // apply the routes to our application with the prefix /api
 
 app.use('/api', apiRoutes);

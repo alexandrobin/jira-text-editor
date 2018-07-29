@@ -6,10 +6,15 @@ import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import {inject, observer} from 'mobx-react'
+import axios from 'axios'
 
 @inject('note','session')
 @observer
 class Profile extends React.Component {
+  state = {
+    notes :[]
+  }
+
   render(){
     return(
       <React.Fragment>
@@ -22,6 +27,16 @@ class Profile extends React.Component {
         >
           <div className="header">
             My Account
+          </div>
+          <Divider/>
+          <div className="allnotes">
+            {this.props.session.notes.map(note => {
+              return (
+                <div className="noteblock">
+                  <a href={note._id}>{note.title}</a>
+                </div>
+              )
+            })}
           </div>
 
         </SwipeableDrawer>

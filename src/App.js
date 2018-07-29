@@ -14,11 +14,18 @@ import Profile from './Profile'
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
 
-class NewNote extends React.PureComponent {
+@inject( ({session,note}) => ({session,note}))
+@observer
+class NewNote extends React.Component {
+
+  newNote = () => {
+    this.props.note.updateNote({value:`New note !`,title:""})
+    this.props.session.updateSession({activeNote:false})
+  }
   render(){
     return(
       <React.Fragment>
-        <Button variant="fab" color="secondary" aria-label="Edit" className="new-button">
+        <Button onClick={this.newNote} variant="fab" color="secondary" aria-label="Edit" className="new-button">
           <Icon>edit_icon</Icon>
         </Button>
       </React.Fragment>
@@ -48,6 +55,11 @@ class App extends Component {
         }
 
       })
+    axios.get('/api/getUserNotes')
+    .then(function(response){
+      self.props.session.updateSession({notes:response.data.notes})
+      console.log(self.props.session.notes)
+    })
   }
 
   toggleDrawer = (side, open) => () => {
@@ -58,16 +70,17 @@ class App extends Component {
 
   saveNote = () => {
     let self = this
-    console.log(this.props.note.title)
-    console.log(this.props.note.value)
-    if(!this.props.session.note){
+    if(!this.props.session.activeNote || this.props.session.activeNote === '' ){
       axios.post('/api/saveNote',{
         title:self.props.note.title,
         value:self.props.note.value
       })
       .then(function(response){
-        console.log(response.success)
-        self.props.session.note = response.success.note
+        self.props.session.updateSession({activeNote:response.data.note})
+        axios.get('/api/getUserNotes')
+        .then(function(response){
+          self.props.session.updateSession({notes:response.data.notes})
+        })
       })
       .catch(function (error) {
         console.log(error);
@@ -85,11 +98,10 @@ class App extends Component {
 
 
   render() {
-    console.log(this.props.session)
     return (
       <Router >
       <div className="App">
-        <Navbar toggleDrawer={this.toggleDrawer} saveNote={this.saveNote}/>
+        <Navbar toggleDrawer={this.toggleDrawer} saveNote={this.saveNote} logout={this.logout}/>
         {this.props.session.user ? <Profile right={this.state.right} user={this.state.user} toggleDrawer={this.toggleDrawer}/> : null }
         <Route exact path="/" render={()=><JiraFormat getValue={this.getValue}/>}/>
         <Route exact path="/" component={NewNote}/>
