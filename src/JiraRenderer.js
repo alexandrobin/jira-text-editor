@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {observer, inject} from 'mobx-react';
 
 const WelcomeText = `h1. Welcome to Jira Text Editor
 
@@ -18,9 +19,6 @@ h6. H6 Title
 * Too much padding between elements`
 
 class JiraFormatted extends React.Component {
-  constructor() {
-    super()
-  }
 
   createList(e, li, pat) {
 
@@ -213,24 +211,23 @@ Image
     )
   }
 }
+
+@inject( ({note:{value,updateNote}}) => ({value,updateNote}))
+@observer
 export default class JiraFormat extends React.Component {
-  constructor() {
-    super()
-    this.state = {
-      value: WelcomeText
-    }
-  }
-  onChange(event) {
-    this.setState({value: event.target.value})
-  }
+
+  handleChange = event => {
+    this.props.updateNote({value:event.target.value})
+  };
+
   render() {
 
     return(
       <div className="editor-container">
       <span>
-        <textarea ref="area" value={this.state.value} onChange={this.onChange.bind(this)}>
+        <textarea ref="area" value={this.props.value} onChange={this.handleChange}>
         </textarea>
-        <JiraFormatted value={this.state.value} />
+        <JiraFormatted value={this.props.value} />
       </span>
       </div>
     )

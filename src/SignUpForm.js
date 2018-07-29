@@ -104,14 +104,22 @@ class SignUpForm extends React.Component {
             value={this.state.amount}
             onChange={this.handleChange('name')}
             name="username"
+            required
           />
+        </FormControl>
+        <FormControl  fullWidth className={classes.margin}>
+          <InputLabel htmlFor="adornment-mail">Email</InputLabel>
           <Input
             id="adornment-mail"
             value={this.state.amount}
             onChange={this.handleChange('mail')}
             name="email"
             placeholder="email"
+            required
           />
+        </FormControl>
+        <FormControl  fullWidth className={classes.margin}>
+          <InputLabel htmlFor="adornment-password">Password</InputLabel>
           <Input
             id="adornment-password"
             type={this.state.showPassword ? 'text' : 'password'}
@@ -119,6 +127,7 @@ class SignUpForm extends React.Component {
             onChange={this.handleChange('password')}
             name="password"
             placeholder="Password"
+            required
             endAdornment={
               <InputAdornment position="end">
                 <IconButton

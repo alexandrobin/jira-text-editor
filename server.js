@@ -4,11 +4,12 @@ var path = require('path'),
     bodyParser = require('body-parser'),
     jwt    = require('jsonwebtoken'),
     User = require('./src/models/users'),
-    //Note = require('./src/models/users'),
+    Note = require('./src/models/notes'),
     Router = require('react-router'),
     morgan      = require('morgan'),
     ejwt = require('express-jwt'),
     sha1 = require('sha1')
+    ObjectId = require('mongoose').Types.ObjectId;
 
 
 
@@ -20,6 +21,10 @@ mongoose.connect("mongodb://127.0.0.1:27017/jira-text-editor", { useNewUrlParser
 .catch((err) => {
   console.log(err)
 });
+
+User.find({}, function(err,user){
+  console.log(user)
+})
 
 
 
@@ -33,7 +38,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(function (req,res,next){
-  console.log(req.user)
   res.locals.currentUser =req.user
   res.locals.test = 1234
   next()
@@ -48,6 +52,7 @@ app.get('/setup', function(req, res) {
   // create a sample user
   var nick = new User({
     username: 'username1',
+    mail:'testmail@mail.com',
     admin: true
   });
 
@@ -107,7 +112,7 @@ app.get('/register', (req,res)=>{
 
 
 
-app.get('/admin', (req,res) => {
+app.get('/admin', isLoggedIn, (req,res) => {
   res.sendFile(path.resolve(__dirname,'./public', 'index.html'))
 })
 
@@ -123,8 +128,8 @@ apiRoutes.post('/login', function(req, res) {
   // find the user
   User.findOne({
      $or: [
-            { username : req.body.name },
-            { mail: req.body.name }
+            { "username" : req.body.name },
+            { "mail": req.body.name }
           ]
    }, function(err, user) {
 
@@ -212,10 +217,6 @@ apiRoutes.get('/auth', (req,res)=> {
 
 
 apiRoutes.post('/saveNote', (req,res)=> {
-  req.body.note
-  req.body.title
-  let note = new Note ({title:req.body.title,value:req.body.note})
-
   let token = req.headers['authorization'].split(' ')[1]
   if (token){
   jwt.verify(token, app.get('superSecret'), function(err, decoded){
@@ -224,20 +225,27 @@ apiRoutes.post('/saveNote', (req,res)=> {
         success:false,
         message:err
       })
-    } else {
-      User.findOne({_id:decoded.id}, function(err,user){
-        user.notes=[]
-        if (err) throw err
-        if (!err){
-          user.notes.push(note)
+    }
+    let note = new Note ({title:req.body.title,value:req.body.value})
+    console.log(decoded.id)
+    User.findOne({_id:decoded.id}, function(err,result){
+      console.log(result)
+      if (err) throw err
+      if (!err){
+      result.notes.push(note)
 
-        user.save(function(err){
-          if (err) throw err
+      result.save(function(err){
+        if (err) throw err
+        res.json({
+          success:true,
+          note:note._id,
+          message:"Note successfully saved"
         })
-      }
       })
     }
-  })
+    })
+  }
+)
 
 }})
 // apply the routes to our application with the prefix /api
@@ -248,10 +256,12 @@ app.use('/api', apiRoutes);
 
 
 function isLoggedIn(req,res,next){
-  if(req.isAuthenticated()){
+  if(req.headers.authorization != null){
     return next();
+  } else {
+    res.redirect('login')
   }
-  res.redirect('login')
+
 }
 
 app.listen(3000, function() {

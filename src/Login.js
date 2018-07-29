@@ -14,6 +14,7 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import Button from '@material-ui/core/Button';
 import axios from 'axios'
+import {observer, inject} from 'mobx-react'
 
 const styles = theme => ({
   root: {
@@ -48,6 +49,8 @@ const ranges = [
   },
 ];
 
+@inject( ({session}) => ({session}))
+@observer
 class Login extends React.Component {
   state = {
     name:'',

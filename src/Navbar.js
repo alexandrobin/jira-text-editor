@@ -7,6 +7,8 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import TextField from '@material-ui/core/TextField';
+import {observer, inject} from 'mobx-react'
 import {
   BrowserRouter as Router,
   Route,
@@ -17,6 +19,11 @@ const styles = {
   root: {
     flexGrow: 1,
   },
+  textField: {
+   width: 200,
+   float:'center',
+   'background-color':'#7986CB'
+ },
   flex: {
     flex: 1,
   },
@@ -26,34 +33,50 @@ const styles = {
   },
 };
 
+@inject('note','session')
+@observer
+class Navbar extends React.Component{
 
-function Navbar(props) {
-  const { classes } = props;
-  return (
+  handleChange = event => {
+    this.props.note.updateNote({title:event.target.value})
+  };
+
+  render(){
+  const { classes } = this.props;
+  return(
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
+          {/* <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
             <MenuIcon />
-          </IconButton>
+          </IconButton> */}
           <Typography variant="title" color="inherit" className={classes.flex}>
-            <Link to="/" style={{ textDecoration: 'none',color:"white" }}>Jira Text Editor</Link>
+            <Link to="/" style={{ textDecoration: 'none',color:"white" }}>JIRA TEXT EDITOR</Link>
           </Typography>
-          {!props.user?(
+          {!this.props.session.user?(
             <div>
               <Button color="inherit"><Link to="/register" style={{ textDecoration: 'none',color:"white" }}>Sign Up</Link></Button>
               <Button color="inherit"><Link to="/login" style={{ textDecoration: 'none',color:"white" }}>Login</Link></Button></div>): null}
-            {props.user?(
+            {this.props.session.user?(
               <div>
-                <Button onClick={props.saveNote} color="inherit">BETA - Save</Button>
-                <Button onClick={props.toggleDrawer('right', true)} color="inherit">{props.user.username}</Button>
-                <Button color="inherit" onClick={props.logout}> Log Out</Button>
+                <TextField
+                  id="name"
+                  className={classes.textField}
+                  value={this.props.note.title}
+                  onChange={this.handleChange}
+                  margin="normal"
+                  placeholder="Select a name"
+                />
+                <Button onClick={this.props.saveNote} color="inherit">BETA - Save</Button>
+                <Button onClick={this.props.toggleDrawer('right', true)} color="inherit">{this.props.session.user.username}</Button>
+                <Button color="inherit" onClick={this.props.logout}> Log Out</Button>
               </div>):null
           }
         </Toolbar>
       </AppBar>
     </div>
   );
+}
 }
 
 Navbar.propTypes = {
