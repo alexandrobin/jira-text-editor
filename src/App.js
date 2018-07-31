@@ -20,7 +20,7 @@ class NewNote extends React.Component {
 
   newNote = () => {
     this.props.note.updateNote({value:`New note !`,title:""})
-    this.props.session.updateSession({activeNote:false})
+    this.props.session.updateSession({savedNote:false})
   }
   render(){
     return(
@@ -58,9 +58,9 @@ class App extends Component {
     axios.get('/api/getUserNotes')
     .then(function(response){
       self.props.session.updateSession({notes:response.data.notes})
-      console.log(self.props.session.notes)
     })
   }
+
 
   toggleDrawer = (side, open) => () => {
     this.setState({
@@ -70,13 +70,14 @@ class App extends Component {
 
   saveNote = () => {
     let self = this
-    if(!this.props.session.activeNote || this.props.session.activeNote === '' ){
+    console.log(this.props.session.savedNote)
       axios.post('/api/saveNote',{
         title:self.props.note.title,
-        value:self.props.note.value
+        value:self.props.note.value,
+        savedNote:self.props.session.savedNote
       })
       .then(function(response){
-        self.props.session.updateSession({activeNote:response.data.note})
+        self.props.session.updateSession({savedNote:response.data.note})
         axios.get('/api/getUserNotes')
         .then(function(response){
           self.props.session.updateSession({notes:response.data.notes})
@@ -85,7 +86,6 @@ class App extends Component {
       .catch(function (error) {
         console.log(error);
       });
-    }
   }
 
   logout = () => {
@@ -103,7 +103,8 @@ class App extends Component {
       <div className="App">
         <Navbar toggleDrawer={this.toggleDrawer} saveNote={this.saveNote} logout={this.logout}/>
         {this.props.session.user ? <Profile right={this.state.right} user={this.state.user} toggleDrawer={this.toggleDrawer}/> : null }
-        <Route exact path="/" render={()=><JiraFormat getValue={this.getValue}/>}/>
+        <Route exact path="/" render={()=><JiraFormat/>}/>
+        <Route path="/note/:id" render={JiraFormat}/>
         <Route exact path="/" component={NewNote}/>
         <Route path="/register" component={SignUpForm}/>
         <Route path="/login"  render={() =><Login/>}/>

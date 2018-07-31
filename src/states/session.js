@@ -4,14 +4,14 @@ class StateSession {
   @observable user = false
   @observable username
   @observable notes = []
-  @observable activeNote
+  @observable savedNote
 
   @action updateSession = (state) => {
     const values = {... this, ...state}
     this.user = values.user
     this.username = values.username
     this.notes = values.notes
-    this.activeNote = values.activeNote
+    this.savedNote = values.savedNote
   }
 }
 

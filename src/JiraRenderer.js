@@ -18,6 +18,7 @@ h6. H6 Title
 * Bold text with bullet points
 * Too much padding between elements`
 
+
 class JiraFormatted extends React.Component {
 
   createList(e, li, pat) {

@@ -71,32 +71,6 @@ app.get('/setup', function(req, res) {
 });
 
 
-// app.use(ejwt({
-//   secret:app.get('superSecret')
-//   // getToken: function fromHeaders (req) {
-//   //     var token = req.headers['Authorization']
-//   //     if (token) {
-//   //       return token;
-//   //     }
-//   //     return null;
-//   //   }
-//   }
-// )
-//   .unless({path:[
-//     '/',
-//     '/login',
-//     '/register',
-//     '/api/login',
-//     '/dll/vendor.js',
-//     '/index.js',
-//     '/api/register',
-//     '/api/auth'
-// ]}))
-
-
-
-
-
 var staticPath = path.join(__dirname, './public');
 app.use(express.static(staticPath));
 app.get('/', (req, res) => {
@@ -109,12 +83,14 @@ app.get('/register', (req,res)=>{
   res.sendFile(path.resolve(__dirname, './public', 'index.html'))
 })
 
+app.get('/note/:id', (req,res) =>{
+  res.sendFile(path.resolve(__dirname, './public', 'index.html'))
+})
 
-
-
-app.get('/admin', isLoggedIn, (req,res) => {
+app.get('/admin', (req,res) => {
   res.sendFile(path.resolve(__dirname,'./public', 'index.html'))
 })
+
 
 // API ROUTES -------------------
 
@@ -218,6 +194,7 @@ apiRoutes.get('/auth', (req,res)=> {
 
 apiRoutes.post('/saveNote', (req,res)=> {
   let token = req.headers['authorization'].split(' ')[1]
+  console.log(req.body.savedNote)
   if (token){
   jwt.verify(token, app.get('superSecret'), function(err, decoded){
     if (err) {
@@ -226,23 +203,39 @@ apiRoutes.post('/saveNote', (req,res)=> {
         message:err
       })
     }
-    let note = new Note ({title:req.body.title,value:req.body.value})
-    console.log(decoded.id)
     User.findOne({_id:decoded.id}, function(err,result){
       console.log(result)
       if (err) throw err
-      if (!err){
-      result.notes.push(note)
+      if (!req.body.savedNote){
+        let note = new Note ({title:req.body.title,value:req.body.value})
+        result.notes.push(note)
 
-      result.save(function(err){
-        if (err) throw err
-        res.json({
-          success:true,
-          note:note._id,
-          message:"Note successfully saved"
+        result.save(function(err){
+          if (err) throw err
+          res.json({
+            success:true,
+            note:note._id,
+            message:"Note successfully saved"
+          })
         })
-      })
-    }
+      }else {
+        let updatedNote = {value:req.body.value,title:req.body.title}
+        let id = req.body.savedNote._id
+        console.log({id})
+        result.notes.findOneAndUpdate({"notes._id":id},{"notes.$":updatedNote},{new:true},function(err,updated){
+          if (err) throw err
+          if (!updated){
+            console.log({updated})
+            res.json({success:false,message:'Cant find the note'})
+          } else {
+            res.json({success:true,message:'Note updated'})
+          }
+
+        })
+        // let toBeUpdatedNote = user.notes.filter(note => note.id == req.body.savedNote._id)
+        // let index = user.notes.findIndex(note => note.id == req.body.savedNote._id )
+        // toBeUpdatedNote
+      }
     })
   }
 )
@@ -254,21 +247,68 @@ apiRoutes.get('/getUserNotes', (req,res)=> {
   if (token){
     jwt.verify(token, app.get('superSecret'), function(err, decoded){
       if (err) {
-        res.json({
+        res.status(401).json({
           success:false,
           message:err
         })
       }
       User.findOne({_id:decoded.id},function(err,result){
-        let userNotes = []
-        result.notes.map(_note => {
-          userNotes.push(_note)
-        })
         res.json({
-          notes:userNotes
+          notes:result.notes
         })
       })
     })
+  }
+})
+
+apiRoutes.get('/note/:id', (req,res)=>{
+  let token = req.headers['authorization'].split(' ')[1]
+  if (token){
+    jwt.verify(token, app.get('superSecret'), function(err, decoded){
+      if (err) {
+        res.json({
+          success:false,
+          message:err
+        })
+      }
+      User.findOne({_id:decoded.id}, (err,user) => {
+        if (err) throw err
+        let note = user.notes.filter(note => note._id == req.params.id)
+        console.log(note)
+        res.json({
+          success:true,
+          note:note[0]
+        })
+      })
+  })
+  }
+})
+
+apiRoutes.get('/eraseNote/:id', (req,res)=>{
+  let token = req.headers['authorization'].split(' ')[1]
+  if (token){
+    jwt.verify(token, app.get('superSecret'), function(err, decoded){
+      if (err) {
+        res.json({
+          success:false,
+          message:err
+        })
+      }
+      User.findOne({_id:decoded.id}, (err,user) => {
+        if (err) throw err
+        let index = user.notes.findIndex(note => note._id == req.params.id)
+        user.notes.splice(index,1)
+        user.save(function(err){
+          if (err) throw err
+          res.json({
+            success:true,
+            message:"Note has been erase with success",
+            notes:user.notes
+          })
+        })
+
+      })
+  })
   }
 })
 // apply the routes to our application with the prefix /api
@@ -278,14 +318,18 @@ app.use('/api', apiRoutes);
 
 
 
-function isLoggedIn(req,res,next){
-  if(req.headers.authorization != null){
-    return next();
-  } else {
-    res.redirect('login')
-  }
-
-}
+// function isLoggedIn(req,res,next){
+//   let token = req.headers['authorization'].split(' ')[1]
+//   if (token){
+//     jwt.verify(token, app.get('superSecret'), function(err, decoded){
+//       if (err) {
+//         res.redirect('login')
+//       } else {
+//         return next()
+//       }
+//     })
+//   }
+// }
 
 app.listen(3000, function() {
   console.log('listening');

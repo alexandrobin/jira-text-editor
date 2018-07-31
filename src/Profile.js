@@ -7,12 +7,29 @@ import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import {inject, observer} from 'mobx-react'
 import axios from 'axios'
+import FA from 'react-fontawesome'
 
 @inject('note','session')
 @observer
 class Profile extends React.Component {
   state = {
     notes :[]
+  }
+
+  handleNote = (note) => (e) =>{
+    e.preventDefault()
+      this.props.note.updateNote({value:note.value,title:note.title})
+      this.props.session.updateSession({savedNote:note})
+  }
+
+  handleErase = (id) => (e) => {
+    e.preventDefault()
+    let self = this
+    console.log(id)
+    axios.get('/api/eraseNote/' + id)
+    .then(function(response){
+      self.props.session.updateSession({notes:response.data.notes})
+    })
   }
 
   render(){
@@ -26,14 +43,16 @@ class Profile extends React.Component {
           onOpen={this.props.toggleDrawer('right', true)}
         >
           <div className="header">
-            My Account
+            {this.props.session.user.mail}
           </div>
           <Divider/>
           <div className="allnotes">
             {this.props.session.notes.map(note => {
               return (
-                <div className="noteblock">
-                  <a href={note._id}>{note.title}</a>
+                <div key={note._id}  onClick={this.handleNote(note)} className="noteblock">
+                  <div className="name-note" onClick={this.handleNote(note)}>{note.title}</div>
+                  <div onClick={this.handleErase(note._id)} className="delete-icon"><FA name="trash">Delete</FA></div>
+
                 </div>
               )
             })}
