@@ -219,19 +219,23 @@ apiRoutes.post('/saveNote', (req,res)=> {
           })
         })
       }else {
-        let updatedNote = {value:req.body.value,title:req.body.title}
-        let id = req.body.savedNote._id
-        console.log({id})
-        result.notes.findOneAndUpdate({"notes._id":id},{"notes.$":updatedNote},{new:true},function(err,updated){
-          if (err) throw err
-          if (!updated){
-            console.log({updated})
-            res.json({success:false,message:'Cant find the note'})
-          } else {
-            res.json({success:true,message:'Note updated'})
-          }
-
+        res.json({
+          success:false,
+          msg:"Update not implemented yet. Please save as a new note"
         })
+        // let updatedNote = {value:req.body.value,title:req.body.title}
+        // let id = req.body.savedNote._id
+        // console.log({id})
+        // result.notes.findOneAndUpdate({"notes._id":id},{"notes.$":updatedNote},{new:true},function(err,updated){
+        //   if (err) throw err
+        //   if (!updated){
+        //     console.log({updated})
+        //     res.json({success:false,message:'Cant find the note'})
+        //   } else {
+        //     res.json({success:true,message:'Note updated'})
+        //   }
+        //
+        // })
         // let toBeUpdatedNote = user.notes.filter(note => note.id == req.body.savedNote._id)
         // let index = user.notes.findIndex(note => note.id == req.body.savedNote._id )
         // toBeUpdatedNote
