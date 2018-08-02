@@ -57,6 +57,7 @@ class App extends Component {
           self.props.session.updateSession({user:response.data.user})
           if (localStorage.getItem('value') && localStorage.getItem('title')){
             self.props.note.updateNote({value:localStorage.getItem('value'),title:localStorage.getItem('title')})
+            self.props.session.updateSession({savedNote:localStorage.getItem('noteid')})
           }
         }
 
@@ -93,6 +94,7 @@ class App extends Component {
       self.props.session.updateSession({savedNote:response.data.note})
       localStorage.setItem('value',self.props.note.value)
       localStorage.setItem('title',self.props.note.title)
+      localStorage.setItem('noteid',self.props.session.savedNote)
 
       axios.get('/api/getUserNotes')
       .then(function(response){
