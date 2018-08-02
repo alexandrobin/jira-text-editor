@@ -67,7 +67,7 @@ class Navbar extends React.Component{
                   margin="normal"
                   placeholder="Select a name"
                 />
-                <Button onClick={this.props.saveNote} color="inherit">BETA - Save</Button>
+                <Button onClick={this.props.saveNote} color="inherit">{this.props.session.savedNote ? "Update":"Save"}</Button>
                 <Button onClick={this.props.toggleDrawer('right', true)} color="inherit">{this.props.session.user.username}</Button>
                 <Button color="inherit" onClick={this.props.logout}> Log Out</Button>
               </div>):null

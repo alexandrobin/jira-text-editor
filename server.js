@@ -193,8 +193,10 @@ apiRoutes.get('/auth', (req,res)=> {
 
 
 apiRoutes.post('/saveNote', (req,res)=> {
-  let token = req.headers['authorization'].split(' ')[1]
-  console.log(req.body.savedNote)
+  let token = req.headers['authorization'].split(' ')[1],
+      title = req.body.title,
+      value = req.body.value
+
   if (token){
   jwt.verify(token, app.get('superSecret'), function(err, decoded){
     if (err) {
@@ -203,44 +205,29 @@ apiRoutes.post('/saveNote', (req,res)=> {
         message:err
       })
     }
-    User.findOne({_id:decoded.id}, function(err,result){
-      console.log(result)
-      if (err) throw err
-      if (!req.body.savedNote){
-        let note = new Note ({title:req.body.title,value:req.body.value})
-        result.notes.push(note)
-
-        result.save(function(err){
+    if (!req.body.savedNote){
+      console.log('hey')
+      let note = new Note ({title:title,value:value,createdBy:decoded.id})
+      note.save((err)=> {
+        if (err) throw err
+        res.json({
+          success:true,
+          note:note._id,
+          message:"Note successfully saved !"
+        })
+      })
+    } else {
+      let id = req.body.savedNote
+      console.log({id})
+      let updatedNote = {$set:{value:req.body.value,title:req.body.title}}
+      Note.findByIdAndUpdate(id,updatedNote,{new:true},function(err,updated){
           if (err) throw err
           res.json({
             success:true,
-            note:note._id,
-            message:"Note successfully saved"
+            note:updated
           })
-        })
-      }else {
-        res.json({
-          success:false,
-          msg:"Update not implemented yet. Please save as a new note"
-        })
-        // let updatedNote = {value:req.body.value,title:req.body.title}
-        // let id = req.body.savedNote._id
-        // console.log({id})
-        // result.notes.findOneAndUpdate({"notes._id":id},{"notes.$":updatedNote},{new:true},function(err,updated){
-        //   if (err) throw err
-        //   if (!updated){
-        //     console.log({updated})
-        //     res.json({success:false,message:'Cant find the note'})
-        //   } else {
-        //     res.json({success:true,message:'Note updated'})
-        //   }
-        //
-        // })
-        // let toBeUpdatedNote = user.notes.filter(note => note.id == req.body.savedNote._id)
-        // let index = user.notes.findIndex(note => note.id == req.body.savedNote._id )
-        // toBeUpdatedNote
-      }
-    })
+      })
+    }
   }
 )
 
@@ -256,9 +243,10 @@ apiRoutes.get('/getUserNotes', (req,res)=> {
           message:err
         })
       }
-      User.findOne({_id:decoded.id},function(err,result){
+      Note.find({createdBy:decoded.id})
+      .exec(function(err,result){
         res.json({
-          notes:result.notes
+          notes:result
         })
       })
     })
@@ -298,20 +286,13 @@ apiRoutes.get('/eraseNote/:id', (req,res)=>{
           message:err
         })
       }
-      User.findOne({_id:decoded.id}, (err,user) => {
+      Note.findByIdAndDelete(req.params.id,(err,note)=>{
         if (err) throw err
-        let index = user.notes.findIndex(note => note._id == req.params.id)
-        user.notes.splice(index,1)
-        user.save(function(err){
-          if (err) throw err
-          res.json({
-            success:true,
-            message:"Note has been erase with success",
-            notes:user.notes
-          })
+            res.json({
+              success:true,
+              message:"Note has been erased with success"
+            })
         })
-
-      })
   })
   }
 })

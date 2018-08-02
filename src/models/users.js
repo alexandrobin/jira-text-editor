@@ -1,5 +1,4 @@
 var mongoose= require('mongoose')
-var NoteSchema = require('./users.js')
 
 var UserSchema = new mongoose.Schema({
   username:{type: String, required: true, unique: true},
@@ -8,7 +7,10 @@ var UserSchema = new mongoose.Schema({
   mail:{type: String, required: true, unique: true},
   password:{type: String, required: true},
   admin:Boolean,
-  notes:[NoteSchema]
+  notes:[{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'Note'
+  }]
 })
 
 

@@ -12,25 +12,14 @@ import FA from 'react-fontawesome'
 @inject('note','session')
 @observer
 class Profile extends React.Component {
-  state = {
-    notes :[]
-  }
 
   handleNote = (note) => (e) =>{
     e.preventDefault()
       this.props.note.updateNote({value:note.value,title:note.title})
-      this.props.session.updateSession({savedNote:note})
+      this.props.session.updateSession({savedNote:note._id})
   }
 
-  handleErase = (id) => (e) => {
-    e.preventDefault()
-    let self = this
-    console.log(id)
-    axios.get('/api/eraseNote/' + id)
-    .then(function(response){
-      self.props.session.updateSession({notes:response.data.notes})
-    })
-  }
+
 
   render(){
     return(
@@ -51,7 +40,7 @@ class Profile extends React.Component {
               return (
                 <div key={note._id}  onClick={this.handleNote(note)} className="noteblock">
                   <div className="name-note" onClick={this.handleNote(note)}>{note.title}</div>
-                  <div onClick={this.handleErase(note._id)} className="delete-icon"><FA name="trash">Delete</FA></div>
+                  <div onClick={this.props.handleErase(note._id)} className="delete-icon"><FA name="trash">Delete</FA></div>
 
                 </div>
               )

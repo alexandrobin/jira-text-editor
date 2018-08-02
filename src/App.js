@@ -13,6 +13,8 @@ import axios from 'axios'
 import Profile from './Profile'
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
+import swal from 'sweetalert'
+require("babel-polyfill");
 
 @inject( ({session,note}) => ({session,note}))
 @observer
@@ -50,8 +52,12 @@ class App extends Component {
       .then(function(response){
         if (!response.data.success){
           console.log(response.data.message)
+          localStorage.clear()
         } else {
           self.props.session.updateSession({user:response.data.user})
+          if (localStorage.getItem('value') && localStorage.getItem('title')){
+            self.props.note.updateNote({value:localStorage.getItem('value'),title:localStorage.getItem('title')})
+          }
         }
 
       })
@@ -59,6 +65,7 @@ class App extends Component {
     .then(function(response){
       self.props.session.updateSession({notes:response.data.notes})
     })
+
   }
 
 
@@ -68,24 +75,50 @@ class App extends Component {
     });
   };
 
-  saveNote = () => {
+  save = () => {
     let self = this
-    console.log(this.props.session.savedNote)
-      axios.post('/api/saveNote',{
-        title:self.props.note.title,
-        value:self.props.note.value,
-        savedNote:self.props.session.savedNote
+    axios.post('/api/saveNote',{
+      title:self.props.note.title,
+      value:self.props.note.value,
+      savedNote:self.props.session.savedNote
+    })
+    .then(function(response){
+      swal({
+        title: "Gotcha",
+        text: "Note successfully saved !",
+        icon: "success",
+        button: "Back to Work!"
       })
+      console.log(response.data.note)
+      self.props.session.updateSession({savedNote:response.data.note})
+      localStorage.setItem('value',self.props.note.value)
+      localStorage.setItem('title',self.props.note.title)
+
+      axios.get('/api/getUserNotes')
       .then(function(response){
-        self.props.session.updateSession({savedNote:response.data.note})
-        axios.get('/api/getUserNotes')
-        .then(function(response){
-          self.props.session.updateSession({notes:response.data.notes})
-        })
+        self.props.session.updateSession({notes:response.data.notes})
       })
-      .catch(function (error) {
-        console.log(error);
-      });
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
+
+  saveNote = () =>{
+    let self = this
+    if (self.props.note.title == undefined || self.props.note.title == "") {
+      swal("Oups, your note needs a title !", {
+            content: "input",
+          })
+          .then((value) => {
+            self.props.note.updateNote({title:value})
+          })
+          .then(function(){
+            self.save()
+          });
+    } else {
+      self.save()
+    }
   }
 
   logout = () => {
@@ -95,6 +128,27 @@ class App extends Component {
 
   }
 
+  handleErase = (id) => (e) => {
+    e.preventDefault()
+    let self = this
+    swal("Are you sure ?", "This will be lost forever :'(", "warning")
+    .then(function(value){
+      if (value){
+        axios.get('/api/eraseNote/' + id)
+        .then(function(response){
+          axios.get('/api/getUserNotes')
+          .then(function(response){
+            self.props.session.updateSession({notes:response.data.notes})
+          })
+        })
+        .then(function(){
+          self.props.note.updateNote({value:"New Note !",title:""})
+          self.props.session.updateSession({savedNote:false})
+        })
+      }
+    });
+  }
+
 
 
   render() {
@@ -102,7 +156,7 @@ class App extends Component {
       <Router >
       <div className="App">
         <Navbar toggleDrawer={this.toggleDrawer} saveNote={this.saveNote} logout={this.logout}/>
-        {this.props.session.user ? <Profile right={this.state.right} user={this.state.user} toggleDrawer={this.toggleDrawer}/> : null }
+        {this.props.session.user ? <Profile right={this.state.right} handleErase={this.handleErase}toggleDrawer={this.toggleDrawer}/> : null }
         <Route exact path="/" render={()=><JiraFormat/>}/>
         <Route path="/note/:id" render={JiraFormat}/>
         <Route exact path="/" component={NewNote}/>
