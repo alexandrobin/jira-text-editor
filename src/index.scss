@@ -75,18 +75,7 @@ body {
 
 
 
-textarea {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom:0;
-  width: calc(50% - 60px);
-  height: 100%;
-  margin: 0;
-  padding: 15px;
-  resize: none;
-  font-size: 100%;
-}
+
 
 
 
@@ -100,73 +89,122 @@ textarea {
   padding: 0;
   width: auto;
   height: auto;
+
+  .editor {
+    position:absolute;
+    left: 0;
+    top: 0;
+    bottom:0;
+    width: 49%;
+    height: 100%;
+    margin: 0;
+    padding: 15px;
+    resize: none;
+    font-size: 100%;
+    border:none;
+  }
+
+  .render {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    top:0;
+    width: 51%;
+    background: #FAFAFA;
+    margin: 0;
+    padding: 15px;
+  }
+  .block {
+    display: block;
+    margin-left: 15px;
+    padding: 15px;
+    border-left: 1px solid grey;
+  }
+
+
+  // * {
+  //   font-family: 'Roboto';
+  // }
+  h1,h2,h3,h4,h5,h6 {
+    padding-bottom: 3px;
+    margin: 0;
+    margin-top: 5px;
+    padding-top: 25px;
+  }
+  h1 {
+    font-size: 160%;
+  }
+  h2 {
+    font-size: 140%;
+  }
+  h3 {
+    font-size: 120%;
+    font-weight: normal;
+  }
+  h4 {
+    font-size: 110%;
+    font-weight: bold;
+  }
+  h5 {
+    font-size: 100%;
+    font-weight: bold;
+  }
+  h6 {
+    font-size: 100%;
+    text-transform: uppercase;
+    color: #999999;
+  }
+
+  table {
+    border-collapse: collapse;
+  }
+  tr {
+    margin: 0;
+    padding: 0;
+  }
+  th, td {
+    border: 1px solid #AAAAAA;
+    margin: 0;
+    padding: 5px;
+  }
+  th {
+    background: #DDDDDD;
+  }
 }
 
-.render {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  top:0;
-  width: 50%;
-  background: #FAFAFA;
-  margin: 0;
-  padding: 15px;
+#login-page{
+  display:block;
+  border-top:5px solid #3f51b5;
+  background-color:#DDDDDD;
+  padding:1rem;
+  box-shadow: 0 2px 3px 0 rgba(0,0,0,.075);
+  border-radius:1%;
+  margin:0 auto;
+  margin-top:1rem;
+  width:30%;
 
+  h3 {
+    text-align:center;
+  }
 
-.block {
-  display: block;
-  margin-left: 15px;
-  padding: 15px;
-  border-left: 1px solid grey;
-}
+  .input-div{
+    width:80%;
+    padding:0.1rem;
+    border-bottom:1px solid black;
+    margin:1rem auto;
+    &:hover{
+      border-bottom:2px solid black;
+    }
 
+    input{
+      outline:none;
+      background-color: transparent;
+      border:none;
 
-// * {
-//   font-family: 'Roboto';
-// }
-h1,h2,h3,h4,h5,h6 {
-  padding-bottom: 3px;
-  margin: 0;
-  margin-top: 5px;
-  padding-top: 25px;
-}
-h1 {
-  font-size: 160%;
-}
-h2 {
-  font-size: 140%;
-}
-h3 {
-  font-size: 120%;
-  font-weight: normal;
-}
-h4 {
-  font-size: 110%;
-  font-weight: bold;
-}
-h5 {
-  font-size: 100%;
-  font-weight: bold;
-}
-h6 {
-  font-size: 100%;
-  text-transform: uppercase;
-  color: #999999;
-}
+      width:100%;
+      display:block;
 
-table {
-  border-collapse: collapse;
-}
-tr {
-  margin: 0;
-  padding: 0;
-}
-th, td {
-  border: 1px solid #AAAAAA;
-  margin: 0;
-  padding: 5px;
-}
-th {
-  background: #DDDDDD;
-}
+    }
+  }
+
 }

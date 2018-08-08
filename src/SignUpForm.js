@@ -94,8 +94,8 @@ class SignUpForm extends React.Component {
     const { classes } = this.props;
 
     return (
-      <div className={classes.root}>
-        <h1>Sign Up !</h1>
+      <div id="login-page">
+        <h3>Sign Up !</h3>
         <form onSubmit={this.register(this.state.name,this.state.mail, this.state.password)}>
         <FormControl  fullWidth className={classes.margin}>
           <InputLabel htmlFor="adornment-username">Username</InputLabel>

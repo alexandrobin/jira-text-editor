@@ -95,8 +95,8 @@ class Login extends React.Component {
     const { classes } = this.props;
 
     return (
-      <div className={classes.root}>
-        <h1> Login</h1>
+      <div id="login-page">
+        <h3> Login</h3>
         <form onSubmit={this.authenticate(this.state.name,this.state.password)}>
         <FormControl  fullWidth className={classes.margin}>
           <InputLabel htmlFor="adornment-email">Username</InputLabel>

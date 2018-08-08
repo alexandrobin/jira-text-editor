@@ -226,7 +226,7 @@ export default class JiraFormat extends React.Component {
     return(
       <div className="editor-container">
       <span>
-        <textarea ref="area" value={this.props.value} onChange={this.handleChange}>
+        <textarea className="editor" ref="area" value={this.props.value} onChange={this.handleChange}>
         </textarea>
         <JiraFormatted value={this.props.value} />
       </span>
