@@ -1,4 +1,4 @@
-import { observable, action } from "mobx"
+import { observable, action } from 'mobx'
 
 const WelcomeText = `h1. Welcome to Jira Text Editor
 
@@ -10,19 +10,23 @@ h4. H4 Title
 h5. H5 Title
 h6. H6 Title
 
-* _Bullet points_
-* :) Emojis
++Fixed+ :
+* 08/08/18:
+** *bold* inside *bullet* points
+** padding inside the renderer
 
 *Known issues :*
-* Bold text with bullet points
-* Too much padding between elements`
+* -Bold text with bullet points-
+* -Too much padding between elements- `
 
 
 class StateNote {
   @observable title
+
   @observable value = WelcomeText
+
   @action updateNote = (state) => {
-    const values = {... this, ...state}
+    const values = { ...this, ...state }
     this.title = values.title
     this.value = values.value
   }

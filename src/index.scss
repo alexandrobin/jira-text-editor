@@ -6,7 +6,7 @@ body {
   bottom: 0;
   margin: 0;
   padding: 0;
-  font-family: 'Roboto';
+  font-family: 'Roboto', sans-serif;
   font-size:16px;
 }
 .App {
@@ -126,10 +126,10 @@ body {
   //   font-family: 'Roboto';
   // }
   h1,h2,h3,h4,h5,h6 {
-    padding-bottom: 3px;
+    padding-bottom: 0.5rem;
     margin: 0;
-    margin-top: 5px;
-    padding-top: 25px;
+    margin-top: 1rem;
+    padding-top: 0.5rem;
   }
   h1 {
     font-size: 160%;

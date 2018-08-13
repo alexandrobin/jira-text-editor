@@ -1,13 +1,16 @@
-import { observable, action } from "mobx"
+import { observable, action } from 'mobx'
 
 class StateSession {
   @observable user = false
+
   @observable username
+
   @observable notes = []
+
   @observable savedNote
 
   @action updateSession = (state) => {
-    const values = {... this, ...state}
+    const values = { ...this, ...state }
     this.user = values.user
     this.username = values.username
     this.notes = values.notes
