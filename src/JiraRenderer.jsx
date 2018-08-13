@@ -124,7 +124,7 @@ class JiraFormatted extends React.Component {
 
 
     e = e.replace(/^\*([^*\n]+)$/g, '¨$1')
-    e = e.replace(/¨(?! ¨)([^*\n]+)¨/g, '<b>$1</b>')
+    e = e.replace(/¨(?! ¨)([^¨\n]+)¨(?! ¨)/g, '<b>$1</b>')
     e = e.replace(/_(.+)_/g, '<i>$1</i>')
     e = e.replace(/\?\?(.+)\?\?/g, '&mdash; <i>$1</i>')
     e = e.replace(/-(.+)- /g, '<strike>$1</strike>')

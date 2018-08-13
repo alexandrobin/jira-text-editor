@@ -11,8 +11,8 @@ h5. H5 Title
 h6. H6 Title
 
 +Fixed+ :
-* 08/08/18:
-** *bold* inside *bullet* points
+* 13/08/18:
+** *bold* inside *bullet* points // (!) Asterisk is unusable & replaced by ¨
 ** padding inside the renderer
 
 *Known issues :*
