@@ -282,6 +282,34 @@ apiRoutes.get('/eraseNote/:id', (req, res) => {
     })
   }
 })
+
+
+//NEW SHARE FEATURE
+apiRoutes.post('/shareNote', (req,res) =>{
+  const noteID = req.body.noteID
+  const recipientID = req.body.recipient
+  const token = req.headers.authorization.split(' ')[1]
+  if (token) {
+    jwt.verify(token, app.get('superSecret'), (err, decoded) => {
+      if (err) {
+        res.json({
+          success: false,
+          message: err,
+        })
+      }
+      Note.findById(noteID, (note) => {
+        note.sharedTo.push(recipientID)
+        note.save((err)=> {
+          if (err) throw err
+          res.json({
+            success:true,
+            message:"note shared"
+          })
+        })
+      })
+    })
+  }
+})
 // apply the routes to our application with the prefix /api
 
 app.use('/api', apiRoutes)
