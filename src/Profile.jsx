@@ -13,6 +13,10 @@ class Profile extends React.Component {
     this.props.session.updateSession({ savedNote: note._id })
   }
 
+  shareNote = () => {
+
+  }
+
 
   render() {
     return (
@@ -39,7 +43,7 @@ class Profile extends React.Component {
                     Delete
                   </FA>
                 </div>
-                <div className="share-icon">
+                <div className="share-icon" onClick={this.props.shareNote()}>
                   <FA name="share">
                     Share
                   </FA>

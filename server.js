@@ -280,8 +280,8 @@ apiRoutes.get('/eraseNote/:id', (req, res) => {
 })
 
 
-//NEW SHARE FEATURE
-apiRoutes.post('/shareNote', (req,res) =>{
+// SHARE FEATURE
+apiRoutes.post('/shareNote', (req, res) => {
   const noteID = req.body.noteID
   const recipientID = req.body.recipient
   const token = req.headers.authorization.split(' ')[1]
@@ -295,11 +295,11 @@ apiRoutes.post('/shareNote', (req,res) =>{
       }
       Note.findById(noteID, (note) => {
         note.sharedTo.push(recipientID)
-        note.save((err)=> {
+        note.save((err) => {
           if (err) throw err
           res.json({
-            success:true,
-            message:"note shared"
+            success: true,
+            message: 'note shared',
           })
         })
       })
