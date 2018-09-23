@@ -45,7 +45,9 @@
   },
   "scripts": {
     "dll": "webpack --config=webpack.dll.js -p",
-    "dev": "npm run dll && webpack -d --watch",
+    "dev": "npm run dev-webpack & npm run dev-server",
+    "dev-server": "NODE_ENV=development nodemon server.js",
+    "dev-webpack": "webpack --watch --mode development",
     "build": "webpack -p"
   },
   "devDependencies": {

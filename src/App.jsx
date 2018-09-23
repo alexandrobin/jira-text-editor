@@ -11,7 +11,6 @@ import NewNote from './library/newNote'
 import Navbar from './Navbar'
 import Login from './Login'
 import Profile from './Profile'
-import EditorContainer from './Editor'
 import SignUpForm from './SignUpForm'
 
 
@@ -138,7 +137,6 @@ class App extends Component {
             )
             : null }
           <Route exact path="/" render={() => <JiraFormat />} />
-          <Route path="/v2" render={EditorContainer} />
           <Route exact path="/" component={NewNote} />
           <Route path="/register" component={SignUpForm} />
           <Route path="/login" render={() => <Login />} />

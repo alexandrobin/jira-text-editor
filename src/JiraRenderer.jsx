@@ -188,7 +188,9 @@ class JiraFormatted extends React.Component {
   }
 }
 
-@inject(({ note: { value, updateNote } }) => ({ value, updateNote }))
+@inject(({ note: { value, updateNote }, ui: { renderer, updateUi } }) => ({
+  value, updateNote, renderer, updateUi,
+}))
 @observer
 export default class JiraFormat extends React.Component {
   handleChange = (event) => {
