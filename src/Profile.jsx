@@ -36,7 +36,12 @@ class Profile extends React.Component {
                 </div>
                 <div onClick={this.props.handleErase(note._id)} className="delete-icon">
                   <FA name="trash">
-Delete
+                    Delete
+                  </FA>
+                </div>
+                <div className="share-icon">
+                  <FA name="share">
+                    Share
                   </FA>
                 </div>
 

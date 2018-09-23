@@ -55,9 +55,16 @@ body {
   }
 
   .delete-icon{
+    margin:0 0.2rem;
     display:inline-block;
     float:right;
     color:red;
+  }
+  .share-icon {
+    margin:0 0.2rem;
+    display: inline-block;
+    float: right;
+    color: #3f51b5;
   }
 }
 
