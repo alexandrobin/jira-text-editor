@@ -81,10 +81,6 @@ app.get('/admin', (req, res) => {
   res.sendFile(path.resolve(__dirname, './public', 'index.html'))
 })
 
-app.get('/v2', (req, res) => {
-  res.sendFile(path.resolve(__dirname, './public', 'index.html'))
-})
-
 
 // API ROUTES -------------------
 

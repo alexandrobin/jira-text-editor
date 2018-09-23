@@ -12,7 +12,7 @@ class JiraFormatted extends React.Component {
     e = e.replace(/:\)/g, "<img src='https://jira.atlassian.com/images/icons/emoticons/smile.gif'/>")
     e = e.replace(/:\(/g, "<img src='https://jira.atlassian.com/images/icons/emoticons/sad.gif'/>")
     e = e.replace(/:P/g, "<img src='https://jira.atlassian.com/images/icons/emoticons/tongue.gif'/>")
-    e = e.replace(/;\)/g, "<img src='https://jira.atlassian.com/images/icons/emoticons/biggrin.gif'/>")
+    e = e.replace(/:D/g, "<img src='https://jira.atlassian.com/images/icons/emoticons/biggrin.gif'/>")
     e = e.replace(/;\)/g, "<img src='https://jira.atlassian.com/images/icons/emoticons/wink.gif'/>")
     e = e.replace(/\(y\)/g, "<img src='https://jira.atlassian.com/images/icons/emoticons/thumbs_up.gif'/>")
     e = e.replace(/\(n\)/g, "<img src='https://jira.atlassian.com/images/icons/emoticons/thumbs_down.gif'/>")
@@ -73,7 +73,7 @@ class JiraFormatted extends React.Component {
   }
 
 
-  // createSList(e, li, pat) {
+  // createSList = (e, li, pat) => {
   //   for (let i = 10; i > 0; i--) {
   //     const p = Array(i + 1).join(pat)
   //     let pn = ''
@@ -94,19 +94,19 @@ class JiraFormatted extends React.Component {
   //     e = e.replace(re, '\n-li-')
   //   }
 
-  //   /*
-  //     e = e.replace(/-li-/g, "<li>")
-  //     e = e.replace(/-\/li-/g, "</li>")
-  //     e = e.replace(/-ol-/g, "<ol>")
-  //     e = e.replace(/-\/ol-/g, "</ol>")
-  //     e = e.replace(/-ul-/g, "<ul>")
-  //     e = e.replace(/-\/ul-/g, "</ul>")
-  //     e = e.replace(/<\/li>[ ]*\n[ ]*<li>/g, "</li><li>")
-  //     e = e.replace(/<li>[ ]*\n[ ]*<ol>/g, "<li style='list-style-type: none'><ol>")
-  //     e = e.replace(/<li>[ ]*\n[ ]*<ul>/g, "<li style='list-style-type: none'><ul>")
-  //     e = e.replace(/<\/li><li>[ ]*<ol>/g, "<ol>")
-  //     e = e.replace(/<\/li><li>[ ]*<ul>/g, "<ul>")
-  //     */
+
+  //   e = e.replace(/-li-/g, '<li>')
+  //   e = e.replace(/-\/li-/g, '</li>')
+  //   e = e.replace(/-ol-/g, '<ol>')
+  //   e = e.replace(/-\/ol-/g, '</ol>')
+  //   e = e.replace(/-ul-/g, '<ul>')
+  //   e = e.replace(/-\/ul-/g, '</ul>')
+  //   e = e.replace(/<\/li>[ ]*\n[ ]*<li>/g, '</li><li>')
+  //   e = e.replace(/<li>[ ]*\n[ ]*<ol>/g, "<li style='list-style-type: none'><ol>")
+  //   e = e.replace(/<li>[ ]*\n[ ]*<ul>/g, "<li style='list-style-type: none'><ul>")
+  //   e = e.replace(/<\/li><li>[ ]*<ol>/g, '<ol>')
+  //   e = e.replace(/<\/li><li>[ ]*<ul>/g, '<ul>')
+
 
   //   return e
   // }
@@ -116,6 +116,7 @@ class JiraFormatted extends React.Component {
     e = this.createList(e, 'ol', '#')
     e = e.replace(/\*/g, '¨')
     e = this.createList(e, 'ul', '¨')
+    // e = this.createSList(e, 'ul', '¨')
 
     e = e.replace(/\\\\/g, '<br>')
     e = e.replace(/----/g, '<hr>')
@@ -172,7 +173,7 @@ class JiraFormatted extends React.Component {
     e = e.join('')
     e = this.getSmiley(e)
 
-
+    e = e.replace(/¨/g, '*')
     e = e.replace(/\n/g, '<br>')
 
     return e
@@ -187,7 +188,9 @@ class JiraFormatted extends React.Component {
   }
 }
 
-@inject(({ note: { value, updateNote } }) => ({ value, updateNote }))
+@inject(({ note: { value, updateNote }, ui: { renderer, updateUi } }) => ({
+  value, updateNote, renderer, updateUi,
+}))
 @observer
 export default class JiraFormat extends React.Component {
   handleChange = (event) => {

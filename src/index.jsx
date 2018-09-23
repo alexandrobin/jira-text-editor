@@ -7,6 +7,7 @@ import { Provider } from 'mobx-react'
 import App from './App'
 import stateNote from './states/note'
 import stateSession from './states/session'
+import stateUi from './states/ui'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './index.scss'
 
@@ -18,6 +19,6 @@ if (localStorage.getItem('token')) {
 }
 
 ReactDOM.render((
-  <Provider note={stateNote} session={stateSession}>
+  <Provider note={stateNote} session={stateSession} ui={stateUi}>
     <App />
   </Provider>), document.getElementById('root'))
