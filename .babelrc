@@ -1,3 +1,16 @@
-  {
-    "presets":["env","stage-2","react","mobx"]
-  }
+{
+  "presets": ["env", "stage-1", "react", "mobx"],
+  "ignore": [
+    "node_modules",
+    "/js/**"
+  ],
+  "plugins": [
+    [
+      "transform-runtime",
+      {
+        "polyfill": false,
+        "regenerator": true
+      }
+    ]
+  ]
+}

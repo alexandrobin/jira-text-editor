@@ -1,29 +1,34 @@
-var webpack = require('webpack');
-var path = require('path');
+const {
+  DllPlugin,
+} = require('webpack')
+const path = require('path')
 
-var BUILD_DIR = path.resolve(__dirname, 'public/dll');
-var ROOT_DIR = path.resolve(__dirname, '');
+const BUILD_DIR = path.resolve(__dirname, 'build')
+const ROOT_DIR = path.resolve(__dirname)
 
 module.exports = {
   context: process.cwd(),
 
   entry: {
-    vendor:[
+    vendor: [
       'react',
-      'react-dom'
-    ]
+      'react-dom',
+      'mobx',
+      'mobx-react',
+      'prop-types',
+    ],
   },
 
- output: {
+  output: {
     filename: '[name].js',
     path: BUILD_DIR,
     library: '[name]',
   },
 
   plugins: [
-    new webpack.DllPlugin({
+    new DllPlugin({
       name: '[name]',
-      path: path.join(ROOT_DIR, '[name].json')
-    })
-  ]
-};
+      path: path.join(ROOT_DIR, '[name].json'),
+    }),
+  ],
+}

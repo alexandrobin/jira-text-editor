@@ -1,6 +1,5 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import 'babel-polyfill'
 
 import axios from 'axios'
 import { Provider } from 'mobx-react'
