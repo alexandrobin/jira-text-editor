@@ -26,15 +26,16 @@ const {
 
 
 const persistence = new Persistence({
-    models,
+  models,
 }) /* query et mutation optionnels */
 persistence.connect({
-    endpoint: 'mongodb://127.0.0.1:27017/jira-text-editor-persistence',
+  endpoint: 'mongodb://127.0.0.1:27017/jira-text-editor-persistence',
 })
 
-Server.init({
+const server = new Server()
+server.init({
   addresses,
-  persistence: persistence,
+  persistence,
   auth: {
     secret: 'dazzled-jwt-secret-key-odnswid',
     async validate() {
@@ -42,7 +43,7 @@ Server.init({
     },
   },
   web: {
-    rootDir: path.resolve(__dirname, '../public'),
+    rootDir: path.resolve(__dirname, '../build'),
     viewDir: path.resolve(__dirname, './views'),
     useStatic: process.env.NODE_ENV === 'production', // In development, static files are handled by WebPack
     views: [{

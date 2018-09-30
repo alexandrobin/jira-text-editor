@@ -1,6 +1,7 @@
 const React = require('react')
 
 const scripts = ['vendor.js', 'index.js']
+const fonts = ['Roboto:300,400,500']
 const Header = require('./components/header')
 /* Create a default HTML file to be filled with React   */
 /* It is also possible to pre-fill it with our App here, */
@@ -8,7 +9,8 @@ const Header = require('./components/header')
 const App = () => (
   <html lang="en">
     <Header
-      title="Lira"
+      title="Jira Text Editor"
+      fonts={fonts}
       scripts={scripts}
     />
     <body>

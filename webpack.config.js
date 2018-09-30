@@ -32,7 +32,7 @@ module.exports = (e) => {
 
   const output = {
     filename: '[name].js',
-    path: path.resolve(__dirname, 'public'),
+    path: path.resolve(__dirname, 'build'),
     publicPath: 'public/',
   }
 
@@ -141,14 +141,14 @@ module.exports = (e) => {
     /* In development, we use a development server for hot reloading */
     devServer = {
       proxy: {
-        '/devpublic/*': {
+        '/public/*': {
           target: `http://0.0.0.0:${WEBPACK_DEV_PORT}/`,
           pathRewrite: {
-            '^/devpublic': '',
+            '^/public': '',
           },
         },
       },
-      contentBase: './public',
+      contentBase: './build',
       host: '0.0.0.0',
       port: WEBPACK_DEV_PORT,
       disableHostCheck: true,
