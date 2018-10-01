@@ -1,6 +1,6 @@
 const React = require('react')
 
-const scripts = ['vendor.js', 'index.js']
+const scripts = ['vendor.js', 'app.js']
 const fonts = ['Roboto:300,400,500']
 const Header = require('./components/header')
 /* Create a default HTML file to be filled with React   */
