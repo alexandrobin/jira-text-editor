@@ -31,7 +31,7 @@ module.exports = class Header extends React.Component {
         <title>{title}</title>
 
         {
-          scripts.map(script => <script src={`public/${script}`} />)
+          scripts.map(script => <script key={script} src={`public/${script}`} />)
         }
       </head>
     )

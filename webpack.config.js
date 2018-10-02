@@ -95,6 +95,7 @@ module.exports = (e) => {
   }
 
   const resolve = {
+    mainFields: ['browser', 'main', 'module'],
     extensions: ['.jsx', '.js', '.json'],
     alias: {
       app: path.resolve(__dirname, 'src'),
