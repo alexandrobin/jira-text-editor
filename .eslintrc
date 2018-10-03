@@ -24,6 +24,10 @@
             "error",
             "never"
         ],
+        "linebreak-style": [
+            "error",
+            "windows"
+        ],
         "no-underscore-dangle": "off",
         "react/prefer-stateless-function": "off",
         "react/no-multi-comp": "off",

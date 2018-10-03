@@ -56,6 +56,8 @@ server.init({
     }
   },
   graphql: {
+    enableGraphiQL: (process.env.NODE_ENV === 'development'),
+    schema: persistence.schema,
     graphql: '/graphql',
     graphiql: '/graphiql',
     graphqlOptions(schema) {
