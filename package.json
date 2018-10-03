@@ -53,6 +53,7 @@
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^5.0.1",
+    "prop-types": "^15.6.2",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "react-fontawesome": "^1.6.1",
@@ -64,6 +65,7 @@
     "react-transform": "0.0.3",
     "reactstrap": "^6.4.0",
     "sha1": "^1.1.1",
+    "webpack": "^4.20.2",
     "sweetalert": "^2.1.0"
   },
   "scripts": {
@@ -105,7 +107,7 @@
     "sass-loader": "^7.0.1",
     "style-loader": "^0.21.0",
     "url-loader": "^1.0.1",
-    "webpack": "^4.20.2",
+    
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.4"
   }

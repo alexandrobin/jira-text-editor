@@ -1,3 +1,4 @@
+import 'bootstrap/dist/css/bootstrap.min.css'
 import React from 'react'
 import ReactDOM from 'react-dom'
 
@@ -10,7 +11,7 @@ import App from './App'
 import stateNote from './states/note'
 import stateSession from './states/session'
 import stateUi from './states/ui'
-import 'bootstrap/dist/css/bootstrap.min.css'
+
 import './index.scss'
 
 

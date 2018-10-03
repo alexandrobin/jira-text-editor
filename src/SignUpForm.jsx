@@ -8,8 +8,8 @@ import FormControl from '@material-ui/core/FormControl'
 import Visibility from '@material-ui/icons/Visibility'
 import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import Button from '@material-ui/core/Button'
-import axios from 'axios'
-import Query from '@dazzled/framework-query'
+import Query, { QueryBuilder, MutationBuilder } from '@dazzled/framework-query'
+import sha1 from 'sha1'
 
 const styles = theme => ({
   root: {
@@ -50,25 +50,55 @@ class SignUpForm extends React.Component {
     this.setState(state => ({ showPassword: !state.showPassword }))
   };
 
-  register = (name, mail, password) => (event) => {
+  register = (username, mail, password) => (event) => {
     event.preventDefault()
-    axios.post('/api/register', {
-      name,
-      password,
-      mail,
+    // axios.post('/api/register', {
+    //   name,
+    //   password,
+    //   mail,
+    // })
+    //   .then((response) => {
+    //     console.log(response)
+    //     if (response.data.success) {
+    //       const { token } = response.data
+    //       window.localStorage.setItem('token', token)
+    //       window.location.href = '/'
+    //     } else {
+    //       window.location.href = '/register'
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log(error)
+    //   })
+    Query.mutate({
+      userCreate: {
+        args: { record: { username, mail } },
+        select: { recordId: true },
+      },
     })
-      .then((response) => {
-        console.log(response)
-        if (response.data.success) {
-          const { token } = response.data
-          window.localStorage.setItem('token', token)
-          window.location.href = '/'
-        } else {
-          window.location.href = '/register'
-        }
+      .then(({ userCreate }) => {
+        const id = userCreate.recordId
+        console.log(id)
+        return id
       })
-      .catch((error) => {
-        console.log(error)
+      .then((id) => {
+        const hashedPassword = sha1(password)
+        const doubleHashedPassword = sha1(hashedPassword + id)
+        Query.mutate({
+          userUpdate: {
+            args: {
+              record:
+              {
+                _id: id,
+                password: doubleHashedPassword,
+              },
+            },
+          },
+          select: { recordId: true },
+        })
+      })
+      .then(({ userUpdate }) => {
+        console.log(userUpdate)
       })
   }
 

@@ -1,11 +1,8 @@
-import {
-  SchemaTypes as Types,
-} from 'mongoose'
+import {SchemaTypes as Types,} from 'mongoose'
 
 export default {
   username: {
     type: String,
-    required: true,
     unique: true,
   },
   firstName: {
@@ -16,12 +13,10 @@ export default {
   },
   mail: {
     type: String,
-    required: true,
     unique: true,
   },
   password: {
     type: String,
-    required: true,
   },
   admin: Boolean,
   notes: [{

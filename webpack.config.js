@@ -10,9 +10,9 @@ const {
 const manifest = require('./vendor.json')
 
 /* Address at which to provide webpack bundle and HMR diff in development */
-const WEBPACK_DEV_ADDRESS = addresses.webpack.host
+// const WEBPACK_DEV_ADDRESS = addresses.webpack.host
 const WEBPACK_DEV_PORT = addresses.webpack.port
-const WEBPACK_DEV_PATH = addresses.webpack.path
+// const WEBPACK_DEV_PATH = addresses.webpack.path
 
 // NOTE: complete dev address will be "http://{WEBPACK_DEV_ADDRESS}:{WEBPACK_DEV_PORT}{WEBPACK_DEV_PATH}"
 
