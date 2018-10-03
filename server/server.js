@@ -43,14 +43,17 @@ server.init({
     },
   },
   web: {
-    rootDir: path.resolve(__dirname, '../build'),
-    viewDir: path.resolve(__dirname, './views'),
-    useStatic: process.env.NODE_ENV === 'production', // In development, static files are handled by WebPack
-    views: [{
-      view: 'index',
-      path: '/{path*}',
+    views: {
+      dir: path.resolve(__dirname, './views'),
+      paths: {
+        '/{path*}': 'index',
+      },
     },
-    ],
+    static: {
+      dir: path.resolve(__dirname, '../build'),
+      path: '/public',
+      enabled: process.env.NODE_ENV === 'production',
+    }
   },
   graphql: {
     graphql: '/graphql',
