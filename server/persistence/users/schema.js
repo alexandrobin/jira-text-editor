@@ -1,4 +1,4 @@
-import {SchemaTypes as Types,} from 'mongoose'
+import { SchemaTypes as Types } from 'mongoose'
 
 export default {
   username: {

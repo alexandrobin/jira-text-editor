@@ -8,8 +8,9 @@ import FormControl from '@material-ui/core/FormControl'
 import Visibility from '@material-ui/icons/Visibility'
 import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import Button from '@material-ui/core/Button'
-import axios from 'axios'
 import { observer, inject } from 'mobx-react'
+import Query, { QueryBuilder, MutationBuilder } from '@dazzled/framework-query'
+import sha1 from 'sha1'
 
 const styles = theme => ({
   root: {
@@ -51,25 +52,39 @@ class Login extends React.Component {
     this.setState(state => ({ showPassword: !state.showPassword }))
   };
 
-  authenticate = (name, password) => (event) => {
+  authenticate = (mail, password) => (event) => {
     event.preventDefault()
-    axios.post('/api/login', {
-      name,
-      password,
+    // axios.post('/api/login', {
+    //   name,
+    //   password,
+    // })
+    //   .then((response) => {
+    //     console.log(response)
+    //     if (response.data.success) {
+    //       const { token } = response.data
+    //       window.localStorage.setItem('token', token)
+    //       window.location.href = '/'
+    //     } else {
+    //       window.location.href = '/login'
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log(error)
+    //   })
+    const hPwd = sha1(password)
+    Query({
+      connect: {
+        args: { mail, password: hPwd },
+        select: { token: true, error: true },
+      },
+    }).then(({ connect }) => {
+      if (connect.token) {
+        window.localStorage.setItem('token', connect.token)
+        window.location.href = '/'
+      } else {
+        console.error(connect.error)
+      }
     })
-      .then((response) => {
-        console.log(response)
-        if (response.data.success) {
-          const { token } = response.data
-          window.localStorage.setItem('token', token)
-          window.location.href = '/'
-        } else {
-          window.location.href = '/login'
-        }
-      })
-      .catch((error) => {
-        console.log(error)
-      })
   }
 
   render() {

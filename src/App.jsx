@@ -12,6 +12,7 @@ import Navbar from './Navbar'
 import Login from './Login'
 import Profile from './Profile'
 import SignUpForm from './SignUpForm'
+import Query, { QueryBuilder, MutationBuilder } from '@dazzled/framework-query'
 
 
 @inject(({ session, note }) => ({ session, note }))
@@ -23,21 +24,33 @@ class App extends Component {
 
   componentWillMount() {
     const self = this
-    axios.get('/api/auth')
-      .then((response) => {
-        if (!response.data.success) {
-          localStorage.clear()
+    Query({
+      auth: {
+        select: { user: { _id: true, username: true, mail: true }, success: true, message: true },
+      },
+    })
+      .then(({ auth }) => {
+        if (!auth.success) {
+
+          // localStorage.clear()
         } else {
-          self.props.session.updateSession({ user: response.data.user })
+          self.props.session.updateSession({ user: auth.user })
           if (localStorage.getItem('value') && localStorage.getItem('title')) {
             self.props.note.updateNote({ value: localStorage.getItem('value'), title: localStorage.getItem('title') })
             self.props.session.updateSession({ savedNote: localStorage.getItem('noteid') })
           }
         }
       })
-    axios.get('/api/getUserNotes')
-      .then((response) => {
-        self.props.session.updateSession({ notes: response.data.notes })
+
+    Query({
+      notes: {
+        select: {
+          title: true, value: true, status: true, createdBy: { _id: true }, sharedTo: { _id: true }, ts: true, _id: true,
+        },
+      },
+    })
+      .then(({ notes }) => {
+        self.props.session.updateSession({ notes })
       })
   }
 

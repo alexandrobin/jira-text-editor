@@ -15,9 +15,9 @@ const Persistence = require('@dazzled/framework-persistence')
 const {
   default: models,
 } = require('./persistence/models')
-// const {
-//   default: query,
-// } = require('./persistence/query')
+const {
+  default: query,
+} = require('./persistence/query')
 
 // Require package.json for configuration
 const {
@@ -26,7 +26,7 @@ const {
 
 
 const persistence = new Persistence({
-  models,
+  models, query: query('dazzled-jwt-secret-key-odnswid'),
 }) /* query et mutation optionnels */
 persistence.connect({
   endpoint: 'mongodb://127.0.0.1:27017/jira-text-editor-persistence',
@@ -53,7 +53,7 @@ server.init({
       dir: path.resolve(__dirname, '../build'),
       path: '/public',
       enabled: process.env.NODE_ENV === 'production',
-    }
+    },
   },
   graphql: {
     enableGraphiQL: (process.env.NODE_ENV === 'development'),
@@ -73,7 +73,7 @@ server.init({
           schema,
           context: {
             auth: req.auth,
-            account: {
+            user: {
               _id,
             },
           },

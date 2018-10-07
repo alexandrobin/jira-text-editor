@@ -70,35 +70,28 @@ class SignUpForm extends React.Component {
     //   .catch((error) => {
     //     console.log(error)
     //   })
+    const hPwd = sha1(password)
     Query.mutate({
-      userCreate: {
-        args: { record: { username, mail } },
-        select: { recordId: true },
+      register: {
+        args: { username, mail, password: hPwd },
       },
     })
-      .then(({ userCreate }) => {
-        const id = userCreate.recordId
-        console.log(id)
-        return id
-      })
-      .then((id) => {
-        const hashedPassword = sha1(password)
-        const doubleHashedPassword = sha1(hashedPassword + id)
-        Query.mutate({
-          userUpdate: {
-            args: {
-              record:
-              {
-                _id: id,
-                password: doubleHashedPassword,
-              },
+      .then(({ register }) => {
+        if (register) {
+          Query({
+            connect: {
+              args: { mail, password: hPwd },
+              select: { token: true, error: true },
             },
-          },
-          select: { recordId: true },
-        })
-      })
-      .then(({ userUpdate }) => {
-        console.log(userUpdate)
+          }).then(({ connect }) => {
+            if (connect.token) {
+              window.localStorage.setItem('token', connect.token)
+              window.location.href = '/'
+            } else {
+              console.error(connect.error)
+            }
+          })
+        }
       })
   }
 

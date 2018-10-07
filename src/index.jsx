@@ -1,6 +1,8 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
 import React from 'react'
 import ReactDOM from 'react-dom'
+import Query, { QueryBuilder, MutationBuilder } from '@dazzled/framework-query'
+
 
 import axios from 'axios'
 
@@ -17,9 +19,12 @@ import './index.scss'
 
 if (localStorage.getItem('token')) {
   axios.defaults.headers.common.authorization = `Bearer ${localStorage.getItem('token')}`
+  Query.configure({ token: localStorage.getItem('token') })
 } else {
   axios.defaults.headers.common.authorization = null
+  Query.configure()
 }
+
 
 class AppComponent extends React.Component {
   render() {
