@@ -69,7 +69,7 @@ const query = secret => ({
           }
         }
         const pwd = sha1(args.password + user._id)
-        if (user.password == pwd) {
+        if (user.password === pwd) {
           return {
             token: JWT.sign(
               { id: user._id },

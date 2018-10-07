@@ -3,6 +3,8 @@ import {
   BrowserRouter as Router,
   Route,
 } from 'react-router-dom'
+import Query, { QueryBuilder, MutationBuilder } from '@dazzled/framework-query'
+
 import swal from 'sweetalert'
 import axios from 'axios'
 import { observer, inject } from 'mobx-react'
@@ -12,7 +14,6 @@ import Navbar from './Navbar'
 import Login from './Login'
 import Profile from './Profile'
 import SignUpForm from './SignUpForm'
-import Query, { QueryBuilder, MutationBuilder } from '@dazzled/framework-query'
 
 
 @inject(({ session, note }) => ({ session, note }))
@@ -31,8 +32,7 @@ class App extends Component {
     })
       .then(({ auth }) => {
         if (!auth.success) {
-
-          // localStorage.clear()
+          localStorage.clear()
         } else {
           self.props.session.updateSession({ user: auth.user })
           if (localStorage.getItem('value') && localStorage.getItem('title')) {
@@ -45,7 +45,13 @@ class App extends Component {
     Query({
       notes: {
         select: {
-          title: true, value: true, status: true, createdBy: { _id: true }, sharedTo: { _id: true }, ts: true, _id: true,
+          title: true,
+          value: true,
+          status: true,
+          createdBy: { _id: true },
+          sharedTo: { _id: true },
+          ts: true,
+          _id: true,
         },
       },
     })
@@ -62,32 +68,100 @@ class App extends Component {
   };
 
   save = () => {
-    const self = this
-    axios.post('/api/saveNote', {
-      title: self.props.note.title,
-      value: self.props.note.value,
-      savedNote: self.props.session.savedNote,
-    })
-      .then((response) => {
-        swal({
-          title: 'Gotcha',
-          text: 'Note successfully saved !',
-          icon: 'success',
-          button: 'Back to Work!',
+    const { title, value } = this.props.note
+    const id = this.props.session.user._id
+    const { savedNote } = this.props.session
+    console.log(savedNote)
+    if (!savedNote) {
+      Query.mutate({
+        noteCreate: {
+          args: {
+            record: {
+              title,
+              value,
+              createdBy: id,
+            },
+          },
+          select: {
+            recordId: true,
+          },
+        },
+      })
+        .then(({ noteCreate }) => {
+          console.log(noteCreate)
+          this.props.session.updateSession({ savedNote: noteCreate.recordId })
+          localStorage.setItem('value', this.props.note.value)
+          localStorage.setItem('title', this.props.note.title)
+          localStorage.setItem('noteid', this.props.session.savedNote)
         })
-        self.props.session.updateSession({ savedNote: response.data.note })
-        localStorage.setItem('value', self.props.note.value)
-        localStorage.setItem('title', self.props.note.title)
-        localStorage.setItem('noteid', self.props.session.savedNote)
-
-        axios.get('/api/getUserNotes')
-          .then((res) => {
-            self.props.session.updateSession({ notes: res.data.notes })
+    } else {
+      Query.mutate({
+        noteUpdate: {
+          args: {
+            record: {
+              _id: savedNote,
+              title,
+              value,
+            },
+          },
+          select: { recordId: true },
+        },
+      })
+        .then(({ noteUpdate }) => {
+          swal({
+            title: 'Gotcha',
+            text: 'Note successfully saved !',
+            icon: 'success',
+            button: 'Back to Work!',
           })
-      })
-      .catch((error) => {
-        throw error
-      })
+          console.log(noteUpdate)
+          this.props.session.updateSession({ savedNote: noteUpdate.recordId })
+          localStorage.setItem('value', this.props.note.value)
+          localStorage.setItem('title', this.props.note.title)
+          localStorage.setItem('noteid', this.props.session.savedNote)
+          Query({
+            notes: {
+              select: {
+                title: true,
+                value: true,
+                status: true,
+                createdBy: { _id: true },
+                sharedTo: { _id: true },
+                ts: true,
+                _id: true,
+              },
+            },
+          })
+            .then(({ notes }) => {
+              this.props.session.updateSession({ notes })
+            })
+        })
+    }
+    // axios.post('/api/saveNote', {
+    //   title: self.props.note.title,
+    //   value: self.props.note.value,
+    //   savedNote: self.props.session.savedNote,
+    // })
+    //   .then((response) => {
+    //     swal({
+    //       title: 'Gotcha',
+    //       text: 'Note successfully saved !',
+    //       icon: 'success',
+    //       button: 'Back to Work!',
+    //     })
+    //     self.props.session.updateSession({ savedNote: response.data.note })
+    //     localStorage.setItem('value', self.props.note.value)
+    //     localStorage.setItem('title', self.props.note.title)
+    //     localStorage.setItem('noteid', self.props.session.savedNote)
+
+    //     axios.get('/api/getUserNotes')
+    //       .then((res) => {
+    //         self.props.session.updateSession({ notes: res.data.notes })
+    //       })
+    //   })
+    //   .catch((error) => {
+    //     throw error
+    //   })
   }
 
   saveNote = () => {

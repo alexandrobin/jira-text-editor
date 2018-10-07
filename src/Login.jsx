@@ -54,23 +54,7 @@ class Login extends React.Component {
 
   authenticate = (mail, password) => (event) => {
     event.preventDefault()
-    // axios.post('/api/login', {
-    //   name,
-    //   password,
-    // })
-    //   .then((response) => {
-    //     console.log(response)
-    //     if (response.data.success) {
-    //       const { token } = response.data
-    //       window.localStorage.setItem('token', token)
-    //       window.location.href = '/'
-    //     } else {
-    //       window.location.href = '/login'
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log(error)
-    //   })
+
     const hPwd = sha1(password)
     Query({
       connect: {

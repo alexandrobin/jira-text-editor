@@ -52,24 +52,7 @@ class SignUpForm extends React.Component {
 
   register = (username, mail, password) => (event) => {
     event.preventDefault()
-    // axios.post('/api/register', {
-    //   name,
-    //   password,
-    //   mail,
-    // })
-    //   .then((response) => {
-    //     console.log(response)
-    //     if (response.data.success) {
-    //       const { token } = response.data
-    //       window.localStorage.setItem('token', token)
-    //       window.location.href = '/'
-    //     } else {
-    //       window.location.href = '/register'
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log(error)
-    //   })
+
     const hPwd = sha1(password)
     Query.mutate({
       register: {
