@@ -1,6 +1,6 @@
 import { observable, action } from 'mobx'
 
-const WelcomeText = `h1. Welcome to Jira Text Editor
+export const WelcomeText = `h1. Welcome to Jira Text Editor
 
 Hi! I'm your first file in *JTE*. If you want to play, you can edit me.
 ?? JTE ??

@@ -4,6 +4,7 @@ import {
   Route,
 } from 'react-router-dom'
 import Query, { QueryBuilder, MutationBuilder } from '@dazzled/framework-query'
+import {WelcomeText} from './states/note'
 
 import swal from 'sweetalert'
 import axios from 'axios'
@@ -67,13 +68,12 @@ class App extends Component {
     })
   };
 
-  save = () => {
+  save = async () => {
     const { title, value } = this.props.note
     const id = this.props.session.user._id
     const { savedNote } = this.props.session
-    console.log(savedNote)
     if (!savedNote) {
-      Query.mutate({
+      await Query.mutate({
         noteCreate: {
           args: {
             record: {
@@ -95,7 +95,7 @@ class App extends Component {
           localStorage.setItem('noteid', this.props.session.savedNote)
         })
     } else {
-      Query.mutate({
+      await Query.mutate({
         noteUpdate: {
           args: {
             record: {
@@ -119,49 +119,24 @@ class App extends Component {
           localStorage.setItem('value', this.props.note.value)
           localStorage.setItem('title', this.props.note.title)
           localStorage.setItem('noteid', this.props.session.savedNote)
-          Query({
-            notes: {
-              select: {
-                title: true,
-                value: true,
-                status: true,
-                createdBy: { _id: true },
-                sharedTo: { _id: true },
-                ts: true,
-                _id: true,
-              },
-            },
-          })
-            .then(({ notes }) => {
-              this.props.session.updateSession({ notes })
-            })
         })
     }
-    // axios.post('/api/saveNote', {
-    //   title: self.props.note.title,
-    //   value: self.props.note.value,
-    //   savedNote: self.props.session.savedNote,
-    // })
-    //   .then((response) => {
-    //     swal({
-    //       title: 'Gotcha',
-    //       text: 'Note successfully saved !',
-    //       icon: 'success',
-    //       button: 'Back to Work!',
-    //     })
-    //     self.props.session.updateSession({ savedNote: response.data.note })
-    //     localStorage.setItem('value', self.props.note.value)
-    //     localStorage.setItem('title', self.props.note.title)
-    //     localStorage.setItem('noteid', self.props.session.savedNote)
-
-    //     axios.get('/api/getUserNotes')
-    //       .then((res) => {
-    //         self.props.session.updateSession({ notes: res.data.notes })
-    //       })
-    //   })
-    //   .catch((error) => {
-    //     throw error
-    //   })
+    Query({
+      notes: {
+        select: {
+          title: true,
+          value: true,
+          status: true,
+          createdBy: { _id: true },
+          sharedTo: { _id: true },
+          ts: true,
+          _id: true,
+        },
+      },
+    })
+      .then(({ notes }) => {
+        this.props.session.updateSession({ notes })
+      })
   }
 
   saveNote = () => {
@@ -189,20 +164,36 @@ class App extends Component {
 
   handleErase = id => (e) => {
     e.preventDefault()
-    const self = this
     swal('Are you sure ?', "This will be lost forever :'(", 'warning')
       .then((value) => {
         if (value) {
-          axios.get(`/api/eraseNote/${id}`)
+          Query.mutate({
+            noteDelete:{
+              args:{
+                _id:id,
+              },
+              select:{recordId:true}
+            }
+          })
             .then(() => {
-              axios.get('/api/getUserNotes')
-                .then((res) => {
-                  self.props.session.updateSession({ notes: res.data.notes })
+              this.props.note.updateNote({ value: WelcomeText, title: '' })
+              this.props.session.updateSession({ savedNote: false })
+              Query({
+                notes: {
+                  select: {
+                    title: true,
+                    value: true,
+                    status: true,
+                    createdBy: { _id: true },
+                    sharedTo: { _id: true },
+                    ts: true,
+                    _id: true,
+                  },
+                },
+              })
+                .then(({ notes }) => {
+                  this.props.session.updateSession({ notes })
                 })
-            })
-            .then(() => {
-              self.props.note.updateNote({ value: 'New Note !', title: '' })
-              self.props.session.updateSession({ savedNote: false })
             })
         }
       })
